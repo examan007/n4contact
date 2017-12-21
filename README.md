@@ -1,8 +1,11 @@
-# N4contact
+# n4contact
+Simple contact manager based on Bootstrap, JQuery, Angular 4, Node, and  Express.
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.6.1.
 
-Run `npm install angular-cli --save` to install it.
+Run `git clone https://github.com/examan007/n4contact.git <working directory>`
+    `cd <working directory>`
+    `npm install @angular/cli --save`
 
 ## Build
 
