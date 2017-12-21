@@ -247,8 +247,8 @@ function execute_ContactApp() {
         console.log('create obj=[' + JSON.stringify(Contacts.contactname) + ']');
         var obj = {
             Name: Contacts.contactname,
-            SmallImage: 'data/nouserpic-50.png',
-            LargeImage: 'data/nouserpic-225.png',
+            SmallImage: 'assets/nouserpic-50.png',
+            LargeImage: 'assets/nouserpic-225.png',
             editclass: 'noshow',
             direction: 'up',
             operation: 'create'
@@ -422,7 +422,7 @@ function initImages(flag) {
             test(element.childNodes[n]);
         }
         function getsrc(element, value) {
-            var src = Contacts.weburl + 'data/nouserpic-50.png';
+            var src = Contacts.weburl + 'assets/nouserpic-50.png';
             if (value == null) { } else {
                 try {
                     var key = element.attr('id');
