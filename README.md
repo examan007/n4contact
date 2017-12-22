@@ -14,8 +14,12 @@ Run `ng build` to build the project. The build artifacts will be stored in the `
 ## Running unit tests
 
 Run `cd dist`
+
     `npm-install-all`
+
 	`node assests/web`
+
+Browse to 'http://localhost:3333'
 
 ## Development server
 
