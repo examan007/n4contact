@@ -102,6 +102,29 @@ function execute_ContactApp() {
             console.log('refresh ' + e.toString());
         }
     }
+    Contacts.getData = function (data, success, failure) {
+        if (Contacts.Debug < 1) { } else
+        try {
+            console.log('data=' + JSON.stringify(data));
+        } catch (e) {
+            console.log(e);
+        }
+        $.ajax({
+            url: '/collate',
+            type: 'GET',
+            dataType: 'json',
+            data: JSON.stringify(data),
+            success: success,
+            error: function (xhr, textStatus, error) {
+                var err = {};
+                try {
+                    err = eval("(" + xhr.responseText + ")");
+                } catch (e) {}
+                console.log('xhr=' + JSON.stringify(err));
+                failure('Error[ ' + JSON.stringify(err) + ']');
+            }
+        });
+    }
     Contacts.sendData = function (data, success, failure) {
         if (Contacts.Debug < 1) { } else
         try {
@@ -319,32 +342,16 @@ function execute_ContactApp() {
     }
     Contacts.template = [
     {
-        name: 'Phone',
-        label: 'Phone number'
+        name: 'datestamp',
+        label: 'Date'
     },
     {
-        name: 'Address',
-        label: 'Postal address'
+        name: 'user',
+        label: 'Username'
     },
     {
-        name: 'Email',
-        label: 'Email address'
-    },
-    {
-        name: 'HomeDir',
-        label: 'Home directory'
-    },
-    {
-        name: 'Location',
-        label: 'Office location'
-    },
-    {
-        name: 'UserTitle',
-        label: 'Role title'
-    },
-    {
-        name: 'UserLevel',
-        label: 'Role level'
+        name: 'query',
+        label: 'Query'
     }
     ];
     Contacts.objects = [];
@@ -374,16 +381,23 @@ $(document).ready(function() {
 
 function initContacts(component) {
     Contacts.component = component;
-    Contacts.sendData({
-        operation: 'retrieve'
+    Contacts.getData({
+        operation: 'collate'
     }, function (data) {
         //console.log(JSON.stringify(data));
         Contacts.objects = data;
         Contacts.objects.forEach( function (obj) {
+            //console.log(JSON.stringify(obj));
             obj.editclass = 'show';
             obj.direction = 'down';
             delete (obj['$$hashKey']);
             toggleEdit(obj);
+            if ( typeof (obj.Key) === 'undefined') {
+                obj.Key = obj.timestamp;
+            }
+            if ( typeof (obj.Name) === 'undefined') {
+                obj.Name = obj.timestamp;
+            }
             Contacts.addToHashMap(obj);
             try {
 			    var tag = '#' + obj.Key;
