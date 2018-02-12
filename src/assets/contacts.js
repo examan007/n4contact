@@ -20,6 +20,9 @@ define(["require", "exports"], function(require, exports){
    exports.readSingleFile = function (obj, suffix) {
         readSingleFile(obj, suffix);
    }
+   exports.getTemplates = function () {
+    return (Contacts.templates);
+   }
 });
 var ContactManager = {
     test: '1234',
@@ -110,7 +113,7 @@ function execute_ContactApp() {
             console.log(e);
         }
         $.ajax({
-            url: '/collate',
+            url: 'collate',
             type: 'GET',
             dataType: 'json',
             data: JSON.stringify(data),
@@ -340,20 +343,8 @@ function execute_ContactApp() {
         }
         Contacts.showWithKey('#' + obj.Key);
     }
-    Contacts.template = [
-    {
-        name: 'datestamp',
-        label: 'Date'
-    },
-    {
-        name: 'user',
-        label: 'Username'
-    },
-    {
-        name: 'query',
-        label: 'Query'
-    }
-    ];
+    Contacts.exclusions = new Set(["Name", "Key", "editclass", "showclass", "loadclass", "direction"]);
+    Contacts.templates = [];
     Contacts.objects = [];
     Contacts.hashmap = [];
     Contacts.addToHashMap = function (obj) {
@@ -373,6 +364,23 @@ function execute_ContactApp() {
             console.log('remove' + e.toString());
         }
     }
+    Contacts.getTemplate = function (obj) {
+        var temp = [];
+        for (var property in obj) {
+            if (!obj.hasOwnProperty(property)) {
+                continue;
+            }
+            if (exclusions.has(property)) {
+                continue;
+            }
+            //console.log("Contacts.getTemplate(), [" + property + "]=[" + obj[property] + "]");
+            temp.push({
+                name: property,
+                label: property
+            });
+        }
+        return (temp);
+    }
 }
 
 $(document).ready(function() {
@@ -384,7 +392,7 @@ function initContacts(component) {
     Contacts.getData({
         operation: 'collate'
     }, function (data) {
-        //console.log(JSON.stringify(data));
+        console.log(JSON.stringify(data));
         Contacts.objects = data;
         Contacts.objects.forEach( function (obj) {
             //console.log(JSON.stringify(obj));
@@ -399,6 +407,8 @@ function initContacts(component) {
                 obj.Name = obj.timestamp;
             }
             Contacts.addToHashMap(obj);
+            Contacts.templates[obj.Key] = Contacts.getTemplate(obj);
+            // console.log("template=[" + JSON.stringify(Contacts.templates[obj.Key]))
             try {
 			    var tag = '#' + obj.Key;
 			    console.log(tag);

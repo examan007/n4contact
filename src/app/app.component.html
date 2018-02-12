@@ -20,7 +20,7 @@
                 </div>
             </div>
         </div>
-        <div *ngFor="let obj of objects" class="well col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
+        <div *ngFor="let obj of Contacts.objects" class="well col-xs-8 col-sm-8 col-md-8 col-lg-8 col-xs-offset-2 col-sm-offset-2 col-md-offset-2 col-lg-offset-2">
             <div class="row user-row">
                 <div class="img-wrap col-xs-2 col-sm-1">
                     <img class="img-attr-thumb img-circle img-{{obj.Key}}" id="{{obj.Key}}-thumb"
@@ -38,7 +38,7 @@
                         </div>
                     </div>
                     <div class="col-xs-12 summary-row">
-                        <span *ngFor="let temp of template"
+                        <span *ngFor="let temp of Contacts.templates[obj.Key]"
                               [class]="objclass">
                             {{obj[temp.name]}}&nbsp;
                         </span>
@@ -126,7 +126,7 @@
                                         <strong>{{obj.Name}}</strong><br>
                                     </div>
                                     <ul class="attr-list-device">
-                                        <li *ngFor="let temp of template" >
+                                        <li *ngFor="let temp of Contacts.templates[obj.Key]" >
                                             <dl>
                                                 <dt>
                                                     <span class="label-fixed">
@@ -154,7 +154,7 @@
                                     </div>
                                     <table class="table table-user-information">
                                         <tbody>
-                                            <tr *ngFor="let temp of template" >
+                                            <tr *ngFor="let temp of Contacts.templates[obj.Key]" >
                                                 <td>{{temp.label}}:</td>
                                                 <td>
                                                     <div class="{{obj.editclass}}">
