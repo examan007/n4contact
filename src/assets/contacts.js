@@ -53,7 +53,7 @@ function execute_ContactApp() {
     Contacts.contactname = '';
     Contacts.results = [];
     Contacts.savedvalues = null;
-    Contacts.weburl = 'http://localhost:3333/';
+    Contacts.weburl = '/';
     Contacts.Debug = 0;
     Contacts.update = function () {
 //        Contacts.scope.$apply();
@@ -105,7 +105,7 @@ function execute_ContactApp() {
             console.log('refresh ' + e.toString());
         }
     }
-    Contacts.getData = function (data, success, failure) {
+    Contacts.getData = function (filename, data, success, failure) {
         if (Contacts.Debug < 1) { } else
         try {
             console.log('data=' + JSON.stringify(data));
@@ -113,7 +113,7 @@ function execute_ContactApp() {
             console.log(e);
         }
         $.ajax({
-            url: 'collate',
+            url: filename,
             type: 'GET',
             dataType: 'json',
             data: JSON.stringify(data),
@@ -136,7 +136,7 @@ function execute_ContactApp() {
             console.log(e);
         }
         $.ajax({
-            url: 'http://localhost:3333/private',
+            url: Contacts.weburl + 'private',
             type: 'POST',
             dataType: 'json',
             data: JSON.stringify(data),
@@ -159,7 +159,7 @@ function execute_ContactApp() {
             console.log(e);
         }
         $.ajax({ 
-            url: 'http://localhost:3333/images',
+            url: Contacts.weburl + 'images',
             type: 'POST',
             dataType: 'json',
             data: data,
@@ -364,6 +364,18 @@ function execute_ContactApp() {
             console.log('remove' + e.toString());
         }
     }
+    Contacts.ordering = {}
+    Contacts.order = [
+        "count",
+        "datestamp",
+        "user",
+        "query"
+        ];
+    Contacts.order.forEach( function (name, i) {
+        console.log("name=[" + name + "] index=[" + i + "]");
+        Contacts.ordering[name] = i;
+    });
+    console.log(JSON.stringify(Contacts.ordering));
     Contacts.getTemplate = function (obj) {
         var temp = [];
         for (var property in obj) {
@@ -379,6 +391,35 @@ function execute_ContactApp() {
                 label: property
             });
         }
+        function first(a, b, name) {
+            if (a.name === 'timestamp') {
+                return (-1);
+            }
+            if (b.namme === 'timestamp') {
+                return (1);
+            }
+            return (a.name.localeCompare(b.name));
+        }
+        function order(a, b) {
+            function getIndex(name) {
+                var i = parseInt(Contacts.ordering[name]);
+                if (isNaN(i)
+                    ||
+                    typeof(i) === 'undefined'
+                    ||
+                    i === 'undefined'
+                    ) {
+                    i = Contacts.order.length;
+                }
+                //console.log("getIndex(" + name + ")=[" + i + "]");
+                return (i);
+            }
+            return (getIndex(a.name) - getIndex(b.name));
+        }
+        temp.sort(function (a, b) {
+            //return (first(a, b, 'timestamp'));
+            return (order(a, b));
+        });
         return (temp);
     }
 }
@@ -389,9 +430,7 @@ $(document).ready(function() {
 
 function initContacts(component) {
     Contacts.component = component;
-    Contacts.getData({
-        operation: 'collate'
-    }, function (data) {
+    function success(data) {
         console.log(JSON.stringify(data));
         Contacts.objects = data;
         Contacts.objects.forEach( function (obj) {
@@ -419,9 +458,20 @@ function initContacts(component) {
         });
         Contacts.update();
         window.setTimeout(initImages, 0);
-    }, function (err) {
-        alert('Unable to retrieve contacts; ' + err);
-        window.setTimeout(initContacts, 2000);
+    }
+    var props =  {
+        operation: 'collate'
+    }
+    Contacts.getData("/collate", props, success,
+    function (err) {
+        Contacts.getData("/snapshot", "", success,
+        function (err) {
+            Contacts.getData("/assets/data.json", "", success,
+            function (err) {
+                alert('Unable to retrieve contacts; ' + err);
+                window.setTimeout(initContacts, 2000);
+            });
+        });
     });
 }
 function initImages(flag) {
@@ -452,7 +502,9 @@ function initImages(flag) {
                     var key = element.attr('id');
                     key = key.substring(0, key.lastIndexOf('-'));
                     var obj = Contacts.hashmap[key];
-                    src = Contacts.weburl + obj[value]; //.replace('images', 'data');
+                    if ( typeof(obj[value]) === 'undefined') {} else {
+                        src = Contacts.weburl + obj[value]; //.replace('images', 'data');
+                    }
                     console.log('value=[' + value + '] src=[' + src + ']');
                 } catch (e) {
                     console.log('getsrc() ' + e.toString());
