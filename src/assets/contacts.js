@@ -486,7 +486,7 @@ function initImages(flag) {
     });
     var i = 0;
     try {
-        test(document.getElementById('ContactManager'));
+        // test(document.getElementById('ContactManager'));
         if (typeof(flag) === 'undefined') {
             Contacts.update();
         }
