@@ -57,7 +57,11 @@ function execute_ContactApp() {
     Contacts.Debug = 0;
     Contacts.update = function () {
 //        Contacts.scope.$apply();
-        Contacts.component.updateObjects(Contacts.component);
+        try {
+            Contacts.component.updateObjects(Contacts.component);
+        } catch (e) {
+            console.log(e.toString())
+        }
     }
     Contacts.getKey = function (obj) {
         return (obj.Name.replace(/\W+/g, "_"));
