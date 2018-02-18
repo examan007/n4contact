@@ -55,6 +55,7 @@ function execute_ContactApp() {
     Contacts.savedvalues = null;
     Contacts.weburl = '/';
     Contacts.Debug = 0;
+    Contacts.modalobj = ModalObj('Contacts-Modal', []);
     Contacts.update = function () {
 //        Contacts.scope.$apply();
         try {
@@ -461,7 +462,7 @@ function initContacts(component) {
             }
         });
         Contacts.update();
-        window.setTimeout(initImages, 0);
+        window.setTimeout(initImages, 10);
     }
     var props =  {
         operation: 'collate'
@@ -473,13 +474,13 @@ function initContacts(component) {
             Contacts.getData("/assets/data.json", "", success,
             function (err) {
                 alert('Unable to retrieve contacts; ' + err);
-                window.setTimeout(initContacts, 2000);
+                window.setTimeout(initContacts, 15000);
             });
         });
     });
 }
 function initImages(flag) {
-    console.log('initImages ... z');
+    console.log('initImages ...');
     ContactManager.setToolTip();
     $('button').click(function(e) {
         e.preventDefault();
@@ -516,9 +517,33 @@ function initImages(flag) {
             }
             return (src);
         }
+
         if (element.nodeName === 'IMG') {
             element.setAttribute('src', getsrc($(element), element.getAttribute('data-src')));
         }
+    }
+    if (Contacts.objects.length == 0) {
+        Contacts.results = [];
+        Contacts.results.push({
+            name: 'No records available',
+            message: 'Cannot establsih connection to the downstream logging agent.'
+        });
+        function create() {
+            var modal = null;
+            return (modal = ModalObj('Contacts-Modal', [{
+                    prefix: 'ok',
+                    name: 'Continue',
+                    method: function () {
+                        console.log("ModalObj onlcick()");
+                        Contacts.results = [];
+                        modal.hide()
+                    }
+                }]
+            ));
+        }
+        Contacts.modalobj = create();
+        Contacts.update();
+        Contacts.modalobj.show()
     }
 }
 

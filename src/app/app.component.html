@@ -239,22 +239,24 @@
                             </div>
                         </div>
                     </div>
-                    <div id="Contacts-Modal" class="modal">
-                        <table class="modal-content">
-                            <tr>
-                                <td>
-                                    <div>
-                                        <p class="modal-entry col-xs-12" *ngFor="let entry of results"><b>{{entry.name}}:</b>&nbsp;{{entry.message}}</p>
-                                    </div>
-                                    <div>
-                                        <div id="Contacts-Modal-close" class="close col-xs-6">&lt;cancel&gt;</div>
-                                        <div id="Contacts-Modal-ok" class="close col-xs-6">&lt;delete&gt;</div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
                 </div>
+            </div>
+            <div id="Contacts-Modal" class="modal">
+                <table class="modal-content">
+                    <tr>
+                        <td>
+                            <div>
+                                <p class="modal-entry col-xs-12" *ngFor="let entry of results"><b>{{entry.name}}:</b>&nbsp;{{entry.message}}</p>
+                            </div>
+                            <div>
+                                <div *ngFor="let control of Contacts.modalobj.actions" id="Contacts-Modal-{{control.prefix}}" class="close col-xs-6"
+                                     (click)="control.method()">
+                                &lt;{{control.name}}&gt;
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </div>
             <div id="scrollcontroller">
                 <div id="scrollelement">

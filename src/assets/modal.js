@@ -1,5 +1,6 @@
 function ModalObj(id, actions) { 
     var modal = {};
+    modal.actions = actions;
     modal.id = id;
     modal.element = document.getElementById(id);
     function complete(modal, callback) {
@@ -20,17 +21,24 @@ function ModalObj(id, actions) {
         initButton(actions[i].prefix, actions[i].method)
     }
     modal.hide = function () {
-        modal.element.style.display = "none";
+        try {
+            modal.element.style.display = "none";
+        } catch (e) {
+            console.log(e.toString());
+        }
     }
     modal.show = function () {
-        modal.element.style.display = "block";
+        try {
+            modal.element.style.display = "block";
+        } catch (e) {
+            console.log(e.toString());
+        }
     }
     function initButton(prefix, method) {
         try {
-            var id = modal.id + prefix;
+            var id = modal.id + "-" + prefix;
             console.log('ModalObj id=[' + id + ']');
             var span = document.getElementById(id);
-            span.onclick = complete(modal, method);
         } catch (e) {
             console.log('ModalObj' + e.toString());
         }
