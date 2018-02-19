@@ -325,11 +325,16 @@ function execute_ContactApp() {
         console.log('search obj=[' + JSON.stringify(Contacts.contactname) + ']');
         alert('Search is not implemented; this would allow specific contact selection from the URI as well.')
     }
-    Contacts.showWithKey = function (dataFor) {
+    Contacts.showWithKey = function (dataFor, direction) {
         var idFor = $(dataFor);
         console.log('panelsButton' + JSON.stringify(dataFor));
         //current button
         idFor.slideToggle(400, function() {
+            if (direction == true) {
+                idFor.show();
+            } else {
+                idFor.hide();
+            }
         })
     }
     Contacts.show = function (obj) {
@@ -338,15 +343,17 @@ function execute_ContactApp() {
     Contacts.expand = function (obj) {
         console.log('expand=' + JSON.stringify(obj));
         var panels = $('.user-infos');
+        var direction = true;
         if (typeof(obj.direction) === 'undefined') {
             obj.direction = 'up';
         } else
         if (obj.direction === 'up') {
             obj.direction = 'down';
+            direction = false;
         } else {
             obj.direction = 'up';
         }
-        Contacts.showWithKey('#' + obj.Key);
+        Contacts.showWithKey('#' + obj.Key, direction);
     }
     Contacts.exclusions = new Set(["Name", "Key", "editclass", "showclass", "loadclass", "direction"]);
     Contacts.templates = [];

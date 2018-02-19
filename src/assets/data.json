@@ -5,7 +5,8 @@
     "user": "class com.schedule1.datapassports.audit.agent.Server",
     "query": "startup",
     "sequence": "0",
-    "count": 1984
+    "count": 1984,
+    "test": true
   },
   {
     "timestamp": "1518465485087",
